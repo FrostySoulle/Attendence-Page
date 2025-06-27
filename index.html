@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <body onload="submitAttendance()">
+    <p>Marking your attendance...</p>
+    <script>
+      function submitAttendance() {
+        const ua = navigator.userAgent;
+        fetch('https://api.ipify.org?format=json')
+          .then(response => response.json())
+          .then(data => {
+            // REPLACE BELOW WITH YOUR GOOGLE SCRIPT URL
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbyGQSNk3z5bTj9uOUTmOSehPkKDjAHbMGpmmJjjiYzMfIvpX2Xgz6KoABne9MJ0ZiSEaQ/exec';
+            window.location.href = ${scriptURL}?ua=${encodeURIComponent(ua)}&ip=${data.ip};
+          });
+      }
+    </script>
+  </body>
+</html>
