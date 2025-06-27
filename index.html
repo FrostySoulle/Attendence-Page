@@ -1,18 +1,35 @@
 <!DOCTYPE html>
 <html>
-  <body onload="submitAttendance()">
-    <p>Marking your attendance...</p>
+  <head>
+    <title>Marking Attendance</title>
     <script>
-      function submitAttendance() {
-        const ua = navigator.userAgent;
-        fetch('https://api.ipify.org?format=json')
-          .then(response => response.json())
-          .then(data => {
-            // REPLACE BELOW WITH YOUR GOOGLE SCRIPT URL
-            const scriptURL = 'https://script.google.com/macros/s/AKfycbyGQSNk3z5bTj9uOUTmOSehPkKDjAHbMGpmmJjjiYzMfIvpX2Xgz6KoABne9MJ0ZiSEaQ/exec';
-            window.location.href = ${scriptURL}?ua=${encodeURIComponent(ua)}&ip=${data.ip};
-          });
-      }
+      window.onload = async function () {
+        try {
+          const ua = navigator.userAgent;
+
+          // Fetch IP address from external API
+          const ipResponse = await fetch('https://api.ipify.org?format=json');
+          const ipData = await ipResponse.json();
+          const ip = ipData.ip;
+
+          // ✅ Replace this with your actual Apps Script Web App URL
+          const scriptURL = 'https://script.google.com/macros/s/AKfycbyGQSNk3z5bTj9uOUTmOSehPkKDjAHbMGpmmJjjiYzMfIvpX2Xgz6KoABne9MJ0ZiSEaQ/exec';
+
+          // Final redirect to Apps Script with params
+          const finalURL = `${scriptURL}?ua=${encodeURIComponent(ua)}&ip=${ip}`;
+
+          // Redirect to trigger the logging
+          window.location.href = finalURL;
+
+        } catch (err) {
+          console.error(err);
+          document.body.innerHTML = "<h3>❌ Error submitting attendance</h3><p>" + err + "</p>";
+        }
+      };
     </script>
-  </body>
+  </head>
+  <body>
+    <h2>🔄 Marking your attendance...</h2>
+    <p>Hang tight. This will redirect automatically.</p>
+  </body>
 </html>
