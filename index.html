@@ -1,18 +1,32 @@
 <!DOCTYPE html>
 <html>
-  <body onload="submitAttendance()">
-    <p>Marking your attendance...</p>
+  <head>
+    <title>Marking Attendance</title>
     <script>
-      function submitAttendance() {
+      async function submitAttendance() {
         const ua = navigator.userAgent;
-        fetch('https://api.ipify.org?format=json')
-          .then(response => response.json())
-          .then(data => {
-            // REPLACE BELOW WITH YOUR GOOGLE SCRIPT URL
-            const scriptURL = 'https://script.google.com/macros/s/AKfycbyGQSNk3z5bTj9uOUTmOSehPkKDjAHbMGpmmJjjiYzMfIvpX2Xgz6KoABne9MJ0ZiSEaQ/exec';
-            window.location.href = ${scriptURL}?ua=${encodeURIComponent(ua)}&ip=${data.ip};
-          });
+
+        // Get IP address from public API
+        try {
+          const ipResponse = await fetch('https://api.ipify.org?format=json');
+          const ipData = await ipResponse.json();
+          const ip = ipData.ip;
+
+          // ✅ Replace this with your actual Google Apps Script Web App URL
+          const scriptURL = 'https://script.google.com/macros/s/AKfycbyGQSNk3z5bTj9uOUTmOSehPkKDjAHbMGpmmJjjiYzMfIvpX2Xgz6KoABne9MJ0ZiSEaQ/exec';
+
+          // Construct the full URL with query parameters
+          const fullURL = ${scriptURL}?ua=${encodeURIComponent(ua)}&ip=${ip};
+
+          // Redirect to trigger the Apps Script
+          window.location.href = fullURL;
+        } catch (error) {
+          document.body.innerHTML = "<p>❌ Error fetching IP or submitting attendance.</p>";
+        }
       }
     </script>
+  </head>
+  <body onload="submitAttendance()">
+    <h2>📍 Marking your attendance...</h2>
   </body>
 </html>
