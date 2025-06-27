@@ -6,27 +6,30 @@
       async function submitAttendance() {
         const ua = navigator.userAgent;
 
-        // Get IP address from public API
         try {
-          const ipResponse = await fetch('https://api.ipify.org?format=json');
-          const ipData = await ipResponse.json();
-          const ip = ipData.ip;
+          // Fetch public IP from ipify
+          const response = await fetch('https://api.ipify.org?format=json');
+          const data = await response.json();
+          const ip = data.ip;
 
-          // ✅ Replace this with your actual Google Apps Script Web App URL
+          // ✅ Paste your actual Google Apps Script Web App URL below
           const scriptURL = 'https://script.google.com/macros/s/AKfycbyGQSNk3z5bTj9uOUTmOSehPkKDjAHbMGpmmJjjiYzMfIvpX2Xgz6KoABne9MJ0ZiSEaQ/exec';
 
-          // Construct the full URL with query parameters
-          const fullURL = ${scriptURL}?ua=${encodeURIComponent(ua)}&ip=${ip};
+          // Construct the redirect URL with query parameters
+          const redirectURL = ${scriptURL}?ua=${encodeURIComponent(ua)}&ip=${ip};
 
-          // Redirect to trigger the Apps Script
-          window.location.href = fullURL;
+          // Redirect to Google Script to log attendance
+          window.location.replace(redirectURL);
+
         } catch (error) {
-          document.body.innerHTML = "<p>❌ Error fetching IP or submitting attendance.</p>";
+          document.body.innerHTML = "<h2>❌ Failed to fetch IP or submit attendance.</h2>";
+          console.error(error);
         }
       }
     </script>
   </head>
   <body onload="submitAttendance()">
     <h2>📍 Marking your attendance...</h2>
+    <p>Please wait...</p>
   </body>
 </html>
